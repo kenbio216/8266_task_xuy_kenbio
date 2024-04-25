@@ -1,10 +1,10 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
-#define KEY 0 // 令变量KEY为0，0对应ESP8266开发板上端口0
+#define KEY 15 // 令变量KEY为0，0对应ESP8266开发板上端口0
 
-const char *ssid = "kenbio";           // 替换自己的WIFI
-const char *password = "123456xuy";    // 替换自己的WIFI
-const char *mqtt_server = "127.0.0.1"; // 替换自己的MQTT服务器IP地址
+const char *ssid = "kenbio";               // 替换自己的WIFI
+const char *password = "123456xuy";        // 替换自己的WIFI
+const char *mqtt_server = "192.168.43.75"; // 替换自己的MQTT服务器IP地址
 
 // 下面是一系列变量定义及初始化
 WiFiClient espClient;
@@ -58,16 +58,21 @@ void callback(char *topic, byte *payload, unsigned int length)
   if ((char)payload[0] == '1')
   {
     digitalWrite(BUILTIN_LED, LOW);
+    Serial.println("成功读取到数值1");
+
   } // 读取payload的第1个字符，如果这个字符是1，就开BUILTIN_LED灯
   if ((char)payload[0] == '0')
   {
     digitalWrite(BUILTIN_LED, HIGH);
+    Serial.println("成功读取到数值0");
   } // 读取payload的第1个字符，如果这个字符是0，就关BUILTIN_LED灯
 }
 
 /* -------------------------------------------------------------------------- */
 /*                           让ESP8266开发板能够接入MQTT服务器                           */
 /* -------------------------------------------------------------------------- */
+const char *mqtt_username = "xuy8266";
+const char *mqtt_password = "ex123456";
 void reconnect()
 {
   // Loop until we're reconnected
@@ -78,6 +83,7 @@ void reconnect()
     String clientId = "ESP8266Client-"; // 给ESP8266开发板随机生成一个客户端ID号，在它连上MQTT服务器后，我们在MQTT服务器网页上能够查看到
     clientId += String(random(0xffff), HEX);
     // Attempt to connect
+    // if (client.connect(clientId.c_str(), mqtt_username, mqtt_password))
     if (client.connect(clientId.c_str()))
     {
       Serial.println("connected"); // 如果ESP8266开发板连上了MQTT服务器，串口输出connected
@@ -121,9 +127,9 @@ void setup()
   Serial.println("订阅成功~~~");
 }
 
- /* -------------------------------------------------------------------------- */
- /*                       Arduino循环执行命令，写在loop函数中的命令循环执行                       */
- /* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+/*                       Arduino循环执行命令，写在loop函数中的命令循环执行                       */
+/* -------------------------------------------------------------------------- */
 void loop()
 {
   // 如果ESP8266开发板没有连接上MQTT服务器，重新建立连接
