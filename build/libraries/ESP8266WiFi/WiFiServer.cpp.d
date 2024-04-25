@@ -1,7 +1,7 @@
-e:\win_code_git\8266_task_xuy_kenbio\build\libraries\ESP8266WiFi\WiFiServer.cpp.o: \
+E:\win_code_git\8266_task_xuy_kenbio\build\libraries\ESP8266WiFi\WiFiServer.cpp.o: \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\libraries\ESP8266WiFi\src\WiFiServer.cpp \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266\CommonHFile.h \
- e:\win_code_git\8266_task_xuy_kenbio\build\core\mqtt_esp8266_myserver.ino.globals.h \
+ E:\win_code_git\8266_task_xuy_kenbio\build\core\mqtt_esp8266_myserver.ino.globals.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2/tools/sdk/include/osapi.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266/user_config.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2/tools/sdk/include/ets_sys.h \

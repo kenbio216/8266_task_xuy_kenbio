@@ -16,18 +16,20 @@ char msg[50];     // 用来存放ESP8266将要PUBLISH到服务器的消息
 int value = 0;    // 这个变量假装自己是温度值，在后面的程序中每秒钟累计加1
 int key_flag = 1; // 这个变量用来和KEY端口读过来的值做比较
 
-// 让ESP8266开发板能够接入WiFi网络
-#line 18 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_esp8266_myserver\\mqtt_esp8266_myserver.ino"
+/* -------------------------------------------------------------------------- */
+/*                            让ESP8266开发板能够接入WiFi网络                           */
+/* -------------------------------------------------------------------------- */
+#line 20 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_esp8266_myserver\\mqtt_esp8266_myserver.ino"
 void setup_wifi();
-#line 43 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_esp8266_myserver\\mqtt_esp8266_myserver.ino"
+#line 47 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_esp8266_myserver\\mqtt_esp8266_myserver.ino"
 void callback(char *topic, byte *payload, unsigned int length);
-#line 65 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_esp8266_myserver\\mqtt_esp8266_myserver.ino"
+#line 71 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_esp8266_myserver\\mqtt_esp8266_myserver.ino"
 void reconnect();
-#line 95 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_esp8266_myserver\\mqtt_esp8266_myserver.ino"
+#line 103 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_esp8266_myserver\\mqtt_esp8266_myserver.ino"
 void setup();
-#line 117 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_esp8266_myserver\\mqtt_esp8266_myserver.ino"
+#line 127 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_esp8266_myserver\\mqtt_esp8266_myserver.ino"
 void loop();
-#line 18 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_esp8266_myserver\\mqtt_esp8266_myserver.ino"
+#line 20 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_esp8266_myserver\\mqtt_esp8266_myserver.ino"
 void setup_wifi()
 {
   delay(10);
@@ -52,7 +54,9 @@ void setup_wifi()
   Serial.println(WiFi.localIP()); // 如果连接上WiFi，串口显示WiFi connected以及ESP8266开发板的IP地址
 }
 
-// 处理MQTT服务器虚拟客户端PUBLISH的TOPIC
+/* -------------------------------------------------------------------------- */
+/*                         处理MQTT服务器虚拟客户端PUBLISH的TOPIC                        */
+/* -------------------------------------------------------------------------- */
 void callback(char *topic, byte *payload, unsigned int length)
 {
   Serial.print("Message arrived [");
@@ -74,7 +78,9 @@ void callback(char *topic, byte *payload, unsigned int length)
   } // 读取payload的第1个字符，如果这个字符是0，就关BUILTIN_LED灯
 }
 
-// 让ESP8266开发板能够接入MQTT服务器
+/* -------------------------------------------------------------------------- */
+/*                           让ESP8266开发板能够接入MQTT服务器                           */
+/* -------------------------------------------------------------------------- */
 void reconnect()
 {
   // Loop until we're reconnected
@@ -104,7 +110,9 @@ void reconnect()
   }
 }
 
-// Arduino初始化命令，写在setup函数中的命令只执行1次
+/* -------------------------------------------------------------------------- */
+/*                       Arduino初始化命令，写在setup函数中的命令只执行1次                      */
+/* -------------------------------------------------------------------------- */
 void setup()
 {
   pinMode(BUILTIN_LED, OUTPUT); // Initialize the BUILTIN_LED pin as an output
@@ -126,7 +134,9 @@ void setup()
   Serial.println("订阅成功~~~");
 }
 
-// Arduino循环执行命令，写在loop函数中的命令循环执行
+ /* -------------------------------------------------------------------------- */
+ /*                       Arduino循环执行命令，写在loop函数中的命令循环执行                       */
+ /* -------------------------------------------------------------------------- */
 void loop()
 {
   // 如果ESP8266开发板没有连接上MQTT服务器，重新建立连接

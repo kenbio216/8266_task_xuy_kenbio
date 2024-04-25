@@ -1,7 +1,7 @@
-e:\win_code_git\8266_task_xuy_kenbio\build\core\Updater.cpp.o: \
+E:\win_code_git\8266_task_xuy_kenbio\build\core\Updater.cpp.o: \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266\Updater.cpp \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266\CommonHFile.h \
- e:\win_code_git\8266_task_xuy_kenbio\build\core\mqtt_esp8266_myserver.ino.globals.h \
+ E:\win_code_git\8266_task_xuy_kenbio\build\core\mqtt_esp8266_myserver.ino.globals.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266/Arduino.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266/umm_malloc/umm_malloc_cfgport.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266/stdlib_noniso.h \
@@ -54,7 +54,7 @@ e:\win_code_git\8266_task_xuy_kenbio\build\core\Updater.cpp.o: \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266\eboot_command.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266/esp8266_peri.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266\StackThunk.h \
- e:\win_code_git\8266_task_xuy_kenbio\build/core/Updater_Signing.h \
+ E:\win_code_git\8266_task_xuy_kenbio\build/core/Updater_Signing.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2/tools/sdk/include/user_interface.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2/tools/sdk/include/os_type.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2/tools/sdk/include/ets_sys.h \

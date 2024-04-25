@@ -1,7 +1,7 @@
-e:\win_code_git\8266_task_xuy_kenbio\build\libraries\ESP8266WiFi\BearSSLHelpers.cpp.o: \
+E:\win_code_git\8266_task_xuy_kenbio\build\libraries\ESP8266WiFi\BearSSLHelpers.cpp.o: \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\libraries\ESP8266WiFi\src\BearSSLHelpers.cpp \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266\CommonHFile.h \
- e:\win_code_git\8266_task_xuy_kenbio\build\core\mqtt_esp8266_myserver.ino.globals.h \
+ E:\win_code_git\8266_task_xuy_kenbio\build\core\mqtt_esp8266_myserver.ino.globals.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\libraries\ESP8266WiFi\src\BearSSLHelpers.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2/tools/sdk/include/bearssl/bearssl.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2/tools/sdk/include/bearssl/bearssl_hash.h \
@@ -66,4 +66,4 @@ e:\win_code_git\8266_task_xuy_kenbio\build\libraries\ESP8266WiFi\BearSSLHelpers.
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266/WString.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266/Stream.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266/md5.h \
- e:\win_code_git\8266_task_xuy_kenbio\build/core/Updater_Signing.h
+ E:\win_code_git\8266_task_xuy_kenbio\build/core/Updater_Signing.h
