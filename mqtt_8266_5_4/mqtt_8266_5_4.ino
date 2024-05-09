@@ -2,7 +2,7 @@
  * @Author: xuyang
  * @Date: 2024-04-25 09:39:14
  * @LastEditors: xuyang
- * @LastEditTime: 2024-05-09 09:44:58
+ * @LastEditTime: 2024-05-09 09:50:46
  * @FilePath: \8266_task_xuy_kenbio\mqtt_8266_5_4\mqtt_8266_5_4.ino
  * @Description:
  *
@@ -70,7 +70,6 @@ static scheduler_task_t scheduler_task[] =
     {
         {led_blink, 500, 0},
         {mqtt_test, 2000, 0}};
-
 
 void Scheduler_run(void)
 {
@@ -182,11 +181,13 @@ void callback(char *topic, byte *payload, unsigned int length)
     {
         payload[length] = '\0'; // 确保以空字符结尾
         String ultrasonicValue = String((char *)payload);
-        lcd.setCursor(0, 1);
-        lcd.print("Ultrasonic: ");
+        lcd.clear();                   // 清空LCD屏幕
+        lcd.setCursor(0, 0);           // 设置光标在第一行的开头
+        lcd.print("The current dist"); // 打印消息的第一部分
+        lcd.setCursor(0, 1);           // 设置光标在第二行的开头
+        lcd.print("is ");
         lcd.print(ultrasonicValue);
-        lcd.print(" cm  ");
-        Serial.println("超声波数值已显示在LCD上");
+        lcd.print(" cm       "); // 清理多余字符
     }
 
     Serial.println();
