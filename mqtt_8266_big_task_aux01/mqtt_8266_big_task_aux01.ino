@@ -1,41 +1,56 @@
-#include <MD_Parola.h>
-#include <MD_MAX72XX.h>
-#include <SPI.h>
+#include <arduinoFFT.h> // 引入ArduinoFFT库
 
-#define HARDWARE_TYPE MD_MAX72XX::FC16_HW
-#define MAX_DEVICES 4
+const uint16_t samples = 128; // 设置采样数量（必须是2的幂，如64, 128, 256）
+const double samplingFrequency = 5000; // 设置采样频率（Hz）
 
-#define DATA_PIN   13  // GPIO 13 - D7
-#define CS_PIN     15  // GPIO 15 - D8
-#define CLK_PIN    14  // GPIO 14 - D5
+double vReal[samples]; // 用于存储采集的真实信号
+double vImag[samples]; // 用于存储虚部信号（初始化为0）
 
-#define MIC_PIN A0 // 麦克风输入引脚
+ArduinoFFT<double> FFT = ArduinoFFT<double>(vReal, vImag, samples, samplingFrequency);
 
-MD_Parola matrixDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
-MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
-
-const int numColumns = MAX_DEVICES * 8; // 点阵模块的列数
+const int analogPin = A0; // 定义模拟量引脚
 
 void setup() {
-  matrixDisplay.begin();
-  mx.begin();
-  matrixDisplay.setIntensity(0); // 亮度范围从 0 到 15
-  matrixDisplay.displayClear();
-  mx.clear();
+    Serial.begin(115200); // 设置串口通讯波特率
+    while (!Serial);
+    Serial.println("Ready");
 }
 
 void loop() {
-  int micValue = analogRead(MIC_PIN); // 读取麦克风模拟值
-  int level = map(micValue, 0, 1023, 0, 8); // 将模拟值映射为点阵模块的行数（从0到8）
-  
-  displaySoundLevel(level);
-}
-
-void displaySoundLevel(int level) {
-  mx.clear();
-  for (int col = 0; col < numColumns; col++) {
-    for (int row = 0; row < level; row++) {
-      mx.setPoint(7 - row, col, true); // 从下到上绘制每列
+    // 读取模拟信号
+    for (uint16_t i = 0; i < samples; i++) {
+        vReal[i] = analogRead(analogPin);
+        vImag[i] = 0; // FFT要求虚部信号
+        delayMicroseconds((1.0 / samplingFrequency) * 1000000); // 控制采样频率
     }
-  }
+
+    // 将原始数据发送到VOFA+
+    for (uint16_t i = 0; i < samples; i++) {
+        // Serial.print(vReal[i]);
+        if (i < samples - 1) {
+            // Serial.print(",");
+        }
+    }
+    // Serial.println(); // 添加换行符分隔每一组数据
+
+    // 执行FFT
+    FFT.windowing(FFTWindow::Hamming, FFTDirection::Forward); // 应用窗口函数
+    FFT.compute(FFTDirection::Forward); // 计算FFT
+    FFT.complexToMagnitude(); // 将结果转换为幅度
+
+    // 将FFT数据发送到VOFA+
+    for (uint16_t i = 0; i < (samples / 2); i++) {
+        // Serial.print(vReal[i]); // 输出每个频率的幅度
+        if (i < (samples / 2) - 1) {
+            // Serial.print(",");
+        }
+    }
+    // Serial.println(); // 添加换行符分隔每一组数据
+
+    // 输出主要频率
+    double dominantFrequency = FFT.majorPeak();
+    // Serial.print("Dominant frequency: ");
+    Serial.println(dominantFrequency, 6);
+
+    // delay(1000); // 延迟1秒
 }
