@@ -131,4 +131,6 @@ E:\win_code_git\8266_task_xuy_kenbio\mqtt_8266_5_4\build\sketch\mqtt_8266_5_4.in
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266/FS.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\libraries\ESP8266WiFi\src/WiFiServerSecureBearSSL.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\libraries\ESP8266WiFi\src/WiFiClientSecure.h \
- C:\Users\xuyang\Documents\Arduino\libraries\PubSubClient\src/PubSubClient.h
+ C:\Users\xuyang\Documents\Arduino\libraries\PubSubClient\src/PubSubClient.h \
+ C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\libraries\Wire/Wire.h \
+ C:\Users\xuyang\Documents\Arduino\libraries\LiquidCrystal_I2C/LiquidCrystal_I2C.h

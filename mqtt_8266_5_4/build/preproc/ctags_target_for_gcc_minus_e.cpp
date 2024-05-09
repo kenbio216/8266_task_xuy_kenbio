@@ -1,6 +1,34 @@
 # 1 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_8266_5_4\\mqtt_8266_5_4.ino"
-# 2 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_8266_5_4\\mqtt_8266_5_4.ino" 2
-# 3 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_8266_5_4\\mqtt_8266_5_4.ino" 2
+/*
+
+ * @Author: xuyang
+
+ * @Date: 2024-04-25 09:39:14
+
+ * @LastEditors: xuyang
+
+ * @LastEditTime: 2024-05-09 09:43:53
+
+ * @FilePath: \8266_task_xuy_kenbio\mqtt_8266_5_4\mqtt_8266_5_4.ino
+
+ * @Description:
+
+ *
+
+ * Copyright (c) 2024 by xuyang, All Rights Reserved
+
+ */
+# 11 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_8266_5_4\\mqtt_8266_5_4.ino"
+/* -------------------------------------------------------------------------- */
+/*                               wifi以及mqtt服务器配置                              */
+/* -------------------------------------------------------------------------- */
+# 15 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_8266_5_4\\mqtt_8266_5_4.ino" 2
+# 16 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_8266_5_4\\mqtt_8266_5_4.ino" 2
+# 17 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_8266_5_4\\mqtt_8266_5_4.ino" 2
+# 18 "E:\\win_code_git\\8266_task_xuy_kenbio\\mqtt_8266_5_4\\mqtt_8266_5_4.ino" 2
+
+// LCD
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // WiFi
 const char *ssid = "kenbio"; // Enter your WiFi name
@@ -8,16 +36,87 @@ const char *password = "123456xuy"; // Enter WiFi password
 
 // MQTT Broker
 const char *mqtt_broker = "192.168.43.75";
-const char *topic = "xuy_8266/demo001";
 const char *mqtt_username = "xuy8266";
 const char *mqtt_password = "ex123456";
 const int mqtt_port = 1883;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
+/* -------------------------------------------------------------------------- */
+/*                                    硬件配置                                    */
+/* -------------------------------------------------------------------------- */
+const int led_red_pin = 0;
+const int led_blue_pin = 2;
+char msg[50]; // 用来存放ESP8266将要PUBLISH到服务器的消息
 
+/* -------------------------------------------------------------------------- */
+/*                                  任务调度器相关配置                                 */
+/* -------------------------------------------------------------------------- */
+uint8_t task_num;
+typedef struct
+{
+    void (*task_func)(void);
+    uint16_t rate_ms;
+    uint32_t last_run;
+} scheduler_task_t;
+
+/* -------------------------------------------------------------------------- */
+/*                                   任务函数定义                                   */
+/* -------------------------------------------------------------------------- */
+static void led_blink(void)
+{
+    // Serial.println("led task!");
+}
+static void mqtt_test(void)
+{
+    snprintf(msg, 10, "%d", analogRead(A0)); // 把光敏电阻的数值发送过去
+    client.publish("xy_light_number", msg); // 服务器能获取亮度传感器数值
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  任务调度器函数定义                                 */
+/* -------------------------------------------------------------------------- */
+
+static scheduler_task_t scheduler_task[] =
+    {
+        {led_blink, 500, 0},
+        {mqtt_test, 2000, 0}};
+
+
+void Scheduler_run(void)
+{
+    for (int i = 0; i < task_num; i++)
+    {
+        uint32_t now_time = millis();
+        if (now_time - scheduler_task[i].last_run >= scheduler_task[i].rate_ms)
+        {
+            scheduler_task[i].task_func();
+            scheduler_task[i].last_run = now_time;
+        }
+    }
+}
+
+void Scheduler_init(void)
+{
+    task_num = sizeof(scheduler_task) / sizeof(scheduler_task_t);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  setup初始入口                                 */
+/* -------------------------------------------------------------------------- */
 void setup()
 {
+    /* --------------------------------- lcd初始化 --------------------------------- */
+    lcd.init();
+    lcd.backlight();
+    lcd.clear();
+    /* --------------------------------- 设置引脚模式 --------------------------------- */
+    pinMode(led_red_pin, 0x01);
+    pinMode(led_blue_pin, 0x01);
+    pinMode(BUILTIN_LED, 0x01);
+    pinMode(A0, 0x00); // 设置光敏电阻引脚为输入模式
+    Scheduler_init();
+    /* ----------------------------- 连接WiFi以及MQTT服务器 ---------------------------- */
     // Set software serial baud to 115200;
     Serial.begin(115200);
     // connecting to a WiFi network
@@ -47,11 +146,23 @@ void setup()
             delay(2000);
         }
     }
-    // publish and subscribe
-    client.publish(topic, "hello emqx");
-    client.subscribe(topic);
+    /* ------------------------------ 配置MQTT服务器的订阅 ------------------------------ */
+
+    client.subscribe("xy2_led_ctrl"); // 订阅灯的话题，服务器能控制板载led灯亮灭
+    client.subscribe("xy2_remote_sound"); // 订阅超声波的话题，使其能够获取超声波的数值并显示在lcd上
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                   loop循环                                   */
+/* -------------------------------------------------------------------------- */
+
+void loop()
+{
+    client.loop();
+    Scheduler_run();
+}
+
+/* ------------------------------ 定义MQTT订阅的回调函数 ----------------------------- */
 void callback(char *topic, byte *payload, unsigned int length)
 {
     Serial.print("Message arrived in topic: ");
@@ -61,11 +172,34 @@ void callback(char *topic, byte *payload, unsigned int length)
     {
         Serial.print((char)payload[i]);
     }
+
+    // 控制LED灯亮灭
+    if (strcmp(topic, "xy2_led_ctrl") == 0)
+    {
+        if ((char)payload[0] == '1')
+        {
+            digitalWrite(BUILTIN_LED, 0x0); // 打开LED灯
+            Serial.println("成功读取到数值1，LED灯亮");
+        }
+        else if ((char)payload[0] == '0')
+        {
+            digitalWrite(BUILTIN_LED, 0x1); // 关闭LED灯
+            Serial.println("成功读取到数值0，LED灯灭");
+        }
+    }
+
+    // 显示超声波数值在LCD上
+    if (strcmp(topic, "xy2_remote_sound") == 0)
+    {
+        payload[length] = '\0'; // 确保以空字符结尾
+        String ultrasonicValue = String((char *)payload);
+        lcd.setCursor(0, 1);
+        lcd.print("Ultrasonic: ");
+        lcd.print(ultrasonicValue);
+        lcd.print(" cm  ");
+        Serial.println("超声波数值已显示在LCD上");
+    }
+
     Serial.println();
     Serial.println("-----------------------");
-}
-
-void loop()
-{
-    client.loop();
 }
