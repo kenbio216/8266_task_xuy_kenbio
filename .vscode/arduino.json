@@ -3,5 +3,5 @@
     "board": "esp8266:esp8266:nodemcuv2",
     "port": "COM5",
     "sketch": "mqtt_8266_big_task_aux01\\mqtt_8266_big_task_aux01.ino",
-    "output": "./mqtt_8266_big_task/build"
+    "output": "./output/build"
 }

@@ -1,8 +1,8 @@
-E:\win_code_git\8266_task_xuy_kenbio\mqtt_8266_big_task\build\libraries\FreqCount\FreqCount.cpp.o: \
- C:\Users\xuyang\Documents\Arduino\libraries\FreqCount\FreqCount.cpp \
+E:\win_code_git\8266_task_xuy_kenbio\mqtt_8266_big_task\build\libraries\arduinoFFT\arduinoFFT.cpp.o: \
+ C:\Users\xuyang\Documents\Arduino\libraries\arduinoFFT\src\arduinoFFT.cpp \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266\CommonHFile.h \
  E:\win_code_git\8266_task_xuy_kenbio\mqtt_8266_big_task\build\core\mqtt_8266_big_task_aux01.ino.globals.h \
- C:\Users\xuyang\Documents\Arduino\libraries\FreqCount\FreqCount.h \
+ C:\Users\xuyang\Documents\Arduino\libraries\arduinoFFT\src\arduinoFFT.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266/Arduino.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266/umm_malloc/umm_malloc_cfgport.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266/stdlib_noniso.h \
@@ -51,4 +51,4 @@ E:\win_code_git\8266_task_xuy_kenbio\mqtt_8266_big_task\build\libraries\FreqCoun
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266/debug.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\variants\nodemcu/pins_arduino.h \
  c:\users\xuyang\appdata\local\arduino15\packages\esp8266\hardware\esp8266\3.1.2\variants\generic\common.h \
- C:\Users\xuyang\Documents\Arduino\libraries\FreqCount\util/FreqCountTimers.h
+ C:\Users\xuyang\Documents\Arduino\libraries\arduinoFFT\src\enumsFFT.h

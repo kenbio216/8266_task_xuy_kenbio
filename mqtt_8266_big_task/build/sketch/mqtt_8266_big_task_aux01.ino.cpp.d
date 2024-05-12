@@ -50,4 +50,5 @@ E:\win_code_git\8266_task_xuy_kenbio\mqtt_8266_big_task\build\sketch\mqtt_8266_b
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\cores\esp8266/debug.h \
  C:\Users\xuyang\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.1.2\variants\nodemcu/pins_arduino.h \
  c:\users\xuyang\appdata\local\arduino15\packages\esp8266\hardware\esp8266\3.1.2\variants\generic\common.h \
- C:\Users\xuyang\Documents\Arduino\libraries\FreqCount/FreqCount.h
+ C:\Users\xuyang\Documents\Arduino\libraries\arduinoFFT\src/arduinoFFT.h \
+ C:\Users\xuyang\Documents\Arduino\libraries\arduinoFFT\src/enumsFFT.h
