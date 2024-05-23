@@ -20,16 +20,6 @@ typedef struct
     uint16_t rate_ms;
     uint32_t last_run;
 } scheduler_task_t;
-/* ------------------------------- 引脚定义（这里修改） ------------------------------- */
-// 定义D0引脚为GPIO16
-const int pinD0 = 2;
-/* -------------------------------------------------------------------------- */
-/*                                     修改我                                    */
-/* -------------------------------------------------------------------------- */
-static scheduler_task_t scheduler_task[] =
-    {
-        {led_blink, 500, 0},
-        {uart1_test, 100, 0}};
 
 /* --------------------------------- 任务函数定义(这里修改) --------------------------------- */
 static void led_blink(void)
@@ -37,11 +27,11 @@ static void led_blink(void)
     static uint8_t led_state = 0;
     if (led_state)
     {
-        digitalWrite(pinD0, HIGH);
+        digitalWrite(pin_led_blue, HIGH);
     }
     else
     {
-        digitalWrite(pinD0, LOW);
+        digitalWrite(pin_led_blue, LOW);
     }
     led_state++;
     led_state %= 2;
@@ -49,6 +39,13 @@ static void led_blink(void)
 static void uart1_test(void)
 {
 }
+/* -------------------------------------------------------------------------- */
+/*                                     修改我                                    */
+/* -------------------------------------------------------------------------- */
+static scheduler_task_t scheduler_task[] =
+    {
+        {led_blink, 500, 0},
+        {uart1_test, 100, 0}};
 
 /* --------------------------------- 任务调度器（修改结构体即可） --------------------------------- */
 
