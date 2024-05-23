@@ -131,7 +131,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if(digitalRead(start)==1){
+  if(1){
   for(int x=0;x<length;x++)
   {
     tone(tonepin,tune[x]);

@@ -13,15 +13,15 @@
 /* --------------------------------- 四合一点阵定义 -------------------------------- */
 #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
 #define MAX_DEVICES 4
-#define DATA_PIN   0
-#define CS_PIN     4
-#define CLK_PIN    5
+#define DATA_PIN 0
+#define CS_PIN 4
+#define CLK_PIN 5
 MD_Parola matrixDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 const int numColumns = MAX_DEVICES * 8; // 点阵模块的列数
 double t;
-float waveformPeriod = 1.0;  // 矩形波周期（秒）
-float waveformAmplitude = 0.5;  // 矩形波幅值（单位：伏特）
+float waveformPeriod = 1.0;    // 矩形波周期（秒）
+float waveformAmplitude = 0.5; // 矩形波幅值（单位：伏特）
 // 定义傅里叶级数的阶数
 const int numHarmonics = 10;
 // 傅里叶级数的系数数组
@@ -39,7 +39,7 @@ Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ80
 #define bottun_trip 14
 
 /* -------------------------------- 蜂鸣器定义 -------------------------------- */
-#define buzzer 15
+#define buzzer 12
 
 /* ---------------------------------- 卡农定义 ---------------------------------- */
 #define NOTE_B0 31
@@ -694,8 +694,8 @@ typedef struct KEY
 } keys;
 keys key[3] = {0};
 /* ----------------------------------- 联网 ----------------------------------- */
-const char *ssid = "Mi11LE";                // 替换自己的WIFI
-const char *password = "Gqw415319";         // 替换自己的WIFI
+const char *ssid = "Mi11LE";                 // 替换自己的WIFI
+const char *password = "Gqw415319";          // 替换自己的WIFI
 const char *mqtt_server = "192.168.129.220"; // 替换自己的MQTT服务器IP地址
 
 /* ----------------------------- 下面是一系列变量定义及初始化 ----------------------------- */
@@ -730,7 +730,7 @@ void setup_wifi()
   Serial.println(WiFi.localIP()); // 如果连接上WiFi，串口显示WiFi connected以及ESP8266开发板的IP地址
 }
 
-//处理MQTT服务器虚拟客户端PUBLISH的TOPIC
+// 处理MQTT服务器虚拟客户端PUBLISH的TOPIC
 void callback(char *topic, byte *payload, unsigned int length)
 {
   Serial.print("童卓 2022030233 罗子丹 2022020584 Message arrived [");
@@ -757,7 +757,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   } // 读取payload的第1个字符，如果这个字符是0，就关BUILTIN_LED灯
 }
 
-//让ESP8266开发板能够接入MQTT服务器
+// 让ESP8266开发板能够接入MQTT服务器
 void reconnect()
 {
   // Loop until we're reconnected
@@ -788,43 +788,49 @@ void reconnect()
 }
 
 // 初始化傅里叶级数的系数
-void initCoefficients() {
-  for (int n = 1; n <= numHarmonics; ++n) {
-    if (n % 2 == 0) {  // 如果是偶数项
-      coefficients[n - 1] = 0.0;  // 偶次谐波的系数为0
-    } else {  // 如果是奇数项
-      coefficients[n - 1] = (4.0 / (n * M_PI)) * waveformAmplitude;  // 计算奇次谐波的系数
+void initCoefficients()
+{
+  for (int n = 1; n <= numHarmonics; ++n)
+  {
+    if (n % 2 == 0)
+    {                            // 如果是偶数项
+      coefficients[n - 1] = 0.0; // 偶次谐波的系数为0
+    }
+    else
+    {                                                               // 如果是奇数项
+      coefficients[n - 1] = (4.0 / (n * M_PI)) * waveformAmplitude; // 计算奇次谐波的系数
     }
   }
 }
 
 // 计算傅里叶级数的和，考虑周期性
 // 计算带有相位偏移的傅里叶级数的和
-float calculateFourierSeries(float time) {
+float calculateFourierSeries(float time)
+{
   float phaseOffset = random(0, 50);
   float normalizedTime = fmod(time, waveformPeriod); // 将时间归一化到周期内
   float result = 0.0;
-  for (int n = 0; n < numHarmonics; ++n) {
+  for (int n = 0; n < numHarmonics; ++n)
+  {
     result += coefficients[n] * sin(2.0 * M_PI * (2 * n + 1) * normalizedTime / waveformPeriod + phaseOffset);
   }
   return result;
 }
 
-
-
-void displaySoundLevel() 
+void displaySoundLevel()
 {
   mx.clear();
-  for(t = waveformPeriod/32;t < waveformPeriod;t = t + waveformPeriod/32)
+  for (t = waveformPeriod / 32; t < waveformPeriod; t = t + waveformPeriod / 32)
   {
     col++;
-    fourierValue = calculateFourierSeries(t)*10;
-    if(fourierValue<=0)
+    fourierValue = calculateFourierSeries(t) * 10;
+    if (fourierValue <= 0)
     {
       fourierValue = -fourierValue;
     }
-    for (int row = 0; row < fourierValue; row++) {
-      if(fourierValue>=8)
+    for (int row = 0; row < fourierValue; row++)
+    {
+      if (fourierValue >= 8)
       {
         fourierValue = 8;
       }
@@ -886,11 +892,11 @@ void task_study()
     delay(durt_dayu[i]);
     noTone(buzzer);
 
-    waveformPeriod = durt_dayu[i]/10;  // 矩形波周期（秒）
-    for(t = waveformPeriod/32;t < waveformPeriod;t = t + waveformPeriod/32)
+    waveformPeriod = durt_dayu[i] / 10; // 矩形波周期（秒）
+    for (t = waveformPeriod / 32; t < waveformPeriod; t = t + waveformPeriod / 32)
     {
       Serial.print("大鱼：");
-      fourierValue = calculateFourierSeries(t)*10;
+      fourierValue = calculateFourierSeries(t) * 10;
       Serial.println(fourierValue);
     }
     displaySoundLevel();
@@ -919,11 +925,11 @@ void task_party()
     delay(pauseBetweenNotes);
     noTone(buzzer);
 
-    waveformPeriod = pauseBetweenNotes/10;  // 矩形波周期（秒）
-    for(t = waveformPeriod/32;t < waveformPeriod;t = t + waveformPeriod/32)
+    waveformPeriod = pauseBetweenNotes / 10; // 矩形波周期（秒）
+    for (t = waveformPeriod / 32; t < waveformPeriod; t = t + waveformPeriod / 32)
     {
       Serial.print("欢乐：");
-      fourierValue = calculateFourierSeries(t)*10;
+      fourierValue = calculateFourierSeries(t) * 10;
       Serial.println(fourierValue);
     }
     displaySoundLevel();
@@ -950,18 +956,16 @@ void task_trip()
     delay(400 * durt_kanong[i]);
     noTone(buzzer);
 
-    waveformPeriod = 400 * durt_kanong[i]/10;  // 矩形波周期（秒）
-    for(t = waveformPeriod/32;t < waveformPeriod;t = t + waveformPeriod/32)
+    waveformPeriod = 400 * durt_kanong[i] / 10; // 矩形波周期（秒）
+    for (t = waveformPeriod / 32; t < waveformPeriod; t = t + waveformPeriod / 32)
     {
       Serial.print("卡农：");
-      fourierValue = calculateFourierSeries(t)*10;
+      fourierValue = calculateFourierSeries(t) * 10;
       Serial.println(fourierValue);
     }
     displaySoundLevel();
   }
 }
-
-
 
 // Arduino初始化命令，写在setup函数中的命令只执行1次
 void setup()
@@ -994,33 +998,33 @@ void setup()
   // // 订阅开发板2的指示灯，接受信息
   while (!client.subscribe("2led", 0))
   {
-     Serial.println("童卓 2022030233 罗子丹 2022020584 订阅失败;尝试重新订阅！");
-     client.subscribe("2led", 0);
-     delay(300);
-   }
-   // 如果成功订阅主题led，串口输出订阅成功~~~
-   Serial.println("童卓 2022030233 罗子丹 2022020584 2led订阅成功~~~");
-   // 订阅开发板2的亮度传感器数值信息,接受信息
-   while (!client.subscribe("distance", 0))
-   {
-     Serial.println("童卓 2022030233 罗子丹 2022020584 订阅失败;尝试重新订阅！");
-     client.subscribe("distance", 0);
-     delay(300);
-   }
-   // 如果成功订阅主题led，串口输出订阅成功~~~
-   Serial.println("童卓 2022030233 罗子丹 2022020584 distance订阅成功~~~");
+    Serial.println("童卓 2022030233 罗子丹 2022020584 订阅失败;尝试重新订阅！");
+    client.subscribe("2led", 0);
+    delay(300);
+  }
+  // 如果成功订阅主题led，串口输出订阅成功~~~
+  Serial.println("童卓 2022030233 罗子丹 2022020584 2led订阅成功~~~");
+  // 订阅开发板2的亮度传感器数值信息,接受信息
+  while (!client.subscribe("distance", 0))
+  {
+    Serial.println("童卓 2022030233 罗子丹 2022020584 订阅失败;尝试重新订阅！");
+    client.subscribe("distance", 0);
+    delay(300);
+  }
+  // 如果成功订阅主题led，串口输出订阅成功~~~
+  Serial.println("童卓 2022030233 罗子丹 2022020584 distance订阅成功~~~");
 }
 
 // Arduino循环执行命令，写在loop函数中的命令循环执行
 void loop()
 {
-  //如果ESP8266开发板没有连接上MQTT服务器，重新建立连接
-  if (!client.connected())
-  {
-    reconnect();
-  }
-  client.loop();
-  if (key[0].short_flag == 1)
+  // 如果ESP8266开发板没有连接上MQTT服务器，重新建立连接
+  // if (!client.connected())
+  // {
+  //   reconnect();
+  // }
+  // client.loop();
+  if ( 1)
   {
     task_study();
     key[0].short_flag = 0;
