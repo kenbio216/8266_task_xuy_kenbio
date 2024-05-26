@@ -14,5 +14,16 @@ void loop()
     Scheduler_run();
     // tone_shang_chun_shan();
     // tone_da_yu();
-    tone_yuan_yu_chou();
+    if (key[0].short_flag)
+    {
+        digitalWrite(pin_led_blue, HIGH);
+        delay(1000);
+        digitalWrite(pin_led_blue, LOW);
+        key[0].short_flag = 0;
+    }
+    if (key[1].short_flag) //按键2被按下就播放音乐
+    {
+        tone_yuan_yu_chou();
+        key[1].short_flag = 0;
+    }
 }

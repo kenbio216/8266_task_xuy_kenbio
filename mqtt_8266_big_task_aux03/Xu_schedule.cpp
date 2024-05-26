@@ -21,6 +21,48 @@ typedef struct
     uint32_t last_run;
 } scheduler_task_t;
 
+/* ---------------------------------- 按键部分 ---------------------------------- */
+const int pin_button_1 = 0;
+const int pin_button_2 = 4;
+const int pin_button_3 = 5;
+
+Keys key[3] = {0}; // 定义并初始化变量
+
+static void key_scan(void)
+{
+    key[0].key_sta = digitalRead(pin_button_1);
+    key[1].key_sta = digitalRead(pin_button_2);
+    key[2].key_sta = digitalRead(pin_button_3);
+    for (uint8_t i = 0; i < 3; i++)
+    {
+        switch (key[i].judge_sta)
+        {
+        case 0:
+            if (key[i].key_sta == 0)
+            {
+                key[i].judge_sta = 1;
+            }
+
+            break;
+        case 1:
+            if (key[i].key_sta == 0)
+                key[i].judge_sta = 2;
+            else
+                key[i].judge_sta = 0;
+            break;
+        case 2:
+            if (key[i].key_sta == 1)
+            {
+                key[i].judge_sta = 0;
+                key[i].short_flag = 1;
+            }
+            else
+            {
+                key[i].judge_sta = 0;
+            }
+        }
+    }
+}
 /* --------------------------------- 任务函数定义(这里修改) --------------------------------- */
 static void led_blink(void)
 {
@@ -45,9 +87,8 @@ static void uart1_test(void)
 static scheduler_task_t scheduler_task[] =
     {
         {led_blink, 500, 0},
-        {uart1_test, 100, 0}};
+        {key_scan, 10, 0}};
 
-/* --------------------------------- 任务调度器（修改结构体即可） --------------------------------- */
 
 /* -------------------------------------------------------------------------- */
 /*                            会不断遍历函数指针，并运行可以运行的任务函数                            */
