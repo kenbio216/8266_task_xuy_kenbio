@@ -15,6 +15,7 @@ const int numColumns = MAX_DEVICES * 8; // 点阵模块的列数
 /* -------------------------------------------------------------------------- */
 /*                                    音调定义                                    */
 /* -------------------------------------------------------------------------- */
+/* ------------------------------- 蜂鸣器部分的音调关系 ------------------------------- */
 // 以下是上春山的音
 #define aNTLC6 278
 #define aNTC1 330
@@ -44,6 +45,38 @@ const int numColumns = MAX_DEVICES * 8; // 点阵模块的列数
 #define cNTC6 661
 #define cNTC7 742
 #define cNTL1 786
+/* ------------------------------ 四合一点阵部分的音调关系 ------------------------------ */
+// 以下是上春山音的高低
+#define aaNTLC6 0
+#define aaNTC1 1
+#define aaNTC2 2
+#define aaNTC3 3
+#define aaNTC5 5
+#define aaNTC6 6
+#define aaNTCL1 8
+
+// 以下是大鱼音的高低
+#define bbNTLC6 1
+#define bbNTLC5 2
+#define bbNTC1 3
+#define bbNTC2 4
+#define bbNTC3 5
+#define bbNTC5 6
+#define bbNTC6 7
+#define bbNTCL1 8
+
+// 以下是愿与愁的音
+#define ccNTLC7 0
+#define ccNTLC6 1
+#define ccNTLC5 2
+#define ccNTC1 3
+#define ccNTC2 4
+#define ccNTC3 5
+#define ccNTC4 6
+#define ccNTC5 6
+#define ccNTC6 7
+#define ccNTC7 7
+#define ccNTL1 8
 
 int start = 14;
 int stop = 16;
@@ -51,7 +84,57 @@ int stop = 16;
 /* -------------------------------------------------------------------------- */
 /*                                   每一曲的音调                                   */
 /* -------------------------------------------------------------------------- */
+/* ------------------------------- 四合一点阵的音调数组 ------------------------------- */
+int tune11[] =
+    {
+        // 以下是上春山的谱
+        aaNTC5, aaNTC5, aaNTC5, aaNTC3, aaNTC2, aaNTC2, aaNTC3, aaNTC5,
+        aaNTC3, aaNTC2, aaNTC1, aaNTC1, aaNTLC6, aaNTC1, aaNTC2, aaNTC6, aaNTC5, aaNTC5,
+        aaNTC6, aaNTC5, aaNTC6, aaNTCL1, aaNTC6, aaNTC5, aaNTC3, aaNTC2, aaNTC3, aaNTC6, aaNTC5,
+        aaNTC2, aaNTC3, aaNTC2, aaNTC1, aaNTLC6, aaNTC3, aaNTC2, aaNTC2,
 
+        aaNTC5, aaNTC5, aaNTC5, aaNTC3, aaNTC2, aaNTC2, aaNTC3, aaNTC5,
+        aaNTC3, aaNTC2, aaNTC1, aaNTC1, aaNTLC6, aaNTC1, aaNTC2, aaNTC6, aaNTC5, aaNTC5,
+        aaNTC6, aaNTC5, aaNTC6, aaNTCL1, aaNTC6, aaNTC5, aaNTC3, aaNTC2, aaNTC3, aaNTC6, aaNTC5,
+        aaNTC2, aaNTC3, aaNTC2, aaNTC1, aaNTLC6, aaNTC2, aaNTC1
+
+};
+
+int tune22[] = {
+    // 以下是大鱼的谱
+    bbNTLC6, bbNTC1, bbNTC1, bbNTC2, bbNTC2, bbNTC3, bbNTC3, bbNTC6, bbNTC5, bbNTC3, bbNTC2,
+    bbNTLC6, bbNTC1, bbNTC1, bbNTC2, bbNTC2, bbNTC3, bbNTC3, bbNTLC6, bbNTLC5,
+    bbNTLC6, bbNTC1, bbNTC1, bbNTC2, bbNTC2, bbNTC3, bbNTC3, bbNTC6, bbNTC5, bbNTC3, bbNTC2,
+    bbNTC2, bbNTC3, bbNTLC6, bbNTC2, bbNTC3, bbNTLC6, bbNTLC5, bbNTLC6,
+
+    bbNTLC6, bbNTC1, bbNTC2, bbNTC1, bbNTLC6, bbNTLC6, bbNTC1, bbNTC2, bbNTC1, bbNTC3,
+    bbNTC3, bbNTC5, bbNTC6, bbNTC6, bbNTC5, bbNTC3, bbNTC2, bbNTC1, bbNTC2, bbNTC3,
+    bbNTLC6, bbNTC1, bbNTC2, bbNTC1, bbNTLC6, bbNTLC6, bbNTC1, bbNTC2, bbNTC1, bbNTC3,
+    bbNTC2, bbNTC3, bbNTLC6, bbNTC2, bbNTC3, bbNTLC6, bbNTLC5, bbNTLC6
+
+};
+
+int tune33[] = {
+    // 以下是愿与愁的谱
+    ccNTC5, ccNTC5, ccNTC3, ccNTC2, ccNTC1, ccNTC2, ccNTC3, ccNTLC6, ccNTC1,
+    ccNTC1, ccNTLC7, ccNTLC5, ccNTLC5, ccNTLC6, ccNTC1,
+    ccNTC5, ccNTC5, ccNTC3, ccNTC2, ccNTC1, ccNTC2, ccNTC3, ccNTLC6, ccNTC1,
+    ccNTC2, ccNTC2, ccNTC1, ccNTC2, ccNTC3,
+    ccNTC3, ccNTC4, ccNTC3, ccNTC1, ccNTLC6, ccNTC1, ccNTC3, ccNTC4, ccNTLC7,
+    ccNTC1, ccNTLC7, ccNTLC5, ccNTLC5, ccNTLC6, ccNTC1,
+    ccNTC5, ccNTC3, ccNTC2, ccNTC1, ccNTC2, ccNTC3, ccNTLC6, ccNTC1,
+    ccNTC3, ccNTLC6, ccNTC2, ccNTC1,
+
+    ccNTL1, ccNTL1, ccNTC7, ccNTC6, ccNTC5, ccNTC5, ccNTC6, ccNTC3, ccNTC5, ccNTC6, ccNTC3, ccNTC5, ccNTC6, ccNTC3, ccNTC5, ccNTC6, ccNTC3, ccNTC5, ccNTC4, ccNTC3,
+    ccNTL1, ccNTL1, ccNTC7, ccNTC6, ccNTC5, ccNTC5, ccNTC6, ccNTC3, ccNTC5, ccNTC6, ccNTC3, ccNTC5, ccNTC6, ccNTC3, ccNTC5, ccNTC6, ccNTC3, ccNTC6,
+    ccNTL1, ccNTL1, ccNTC7, ccNTC6, ccNTC5, ccNTC5, ccNTC6, ccNTC3, ccNTC5, ccNTC6, ccNTC3, ccNTC5, ccNTC6, ccNTC3, ccNTC5,
+    ccNTC3, ccNTC3, ccNTC5, ccNTC3, ccNTC2, ccNTC1, ccNTLC7, ccNTC1, ccNTLC7, ccNTLC6,
+    ccNTLC6, ccNTC3, ccNTC2, ccNTC1, ccNTLC7, ccNTLC5, ccNTLC6,
+    ccNTC3, ccNTC2, ccNTC1, ccNTLC7, ccNTC1, ccNTLC7, ccNTLC6,
+    ccNTLC6, ccNTC3, ccNTC2, ccNTC1, ccNTLC7, ccNTLC5, ccNTLC6
+
+};
+/* -------------------------------- 蜂鸣器的音调数组 -------------------------------- */
 int tune1[] =
     {
         // 以下是上春山的谱
@@ -178,14 +261,17 @@ void tone_shang_chun_shan(void)
         {
             noTone(tonepin);
             tone(tonepin, tune1[tone_ptr]);
-            int level = map(tune1[tone_ptr], 0, 8, 0, 8); // 将模拟值映射为点阵模块的行数（从0到8）
+            int level = map(tune11[tone_ptr], 0, 8, 0, 8); // 将模拟值映射为点阵模块的行数（从0到8）
             displaySoundLevel(level);
             tone_ptr++;
             current_time = millis();
         }
     }
-    else
+    else if (tone_ptr >= 74)
+    {
         noTone(tonepin);
+        tone_ptr = 0;
+    }
 }
 
 void tone_da_yu(void)
