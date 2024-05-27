@@ -1,4 +1,16 @@
 #include "Dai_tone.h"
+/* ------------------------------- 四合一点阵的引脚定义 ------------------------------- */
+#define HARDWARE_TYPE MD_MAX72XX::FC16_HW
+#define MAX_DEVICES 4
+
+#define DATA_PIN 3 // GPIO 13 - D7
+#define CS_PIN 7   // GPIO 15 - D8
+#define CLK_PIN 2  // GPIO 14 - D5
+
+MD_Parola matrixDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
+MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
+
+const int numColumns = MAX_DEVICES * 8; // 点阵模块的列数
 
 /* -------------------------------------------------------------------------- */
 /*                                    音调定义                                    */
@@ -135,6 +147,27 @@ int length1 = sizeof(tune1) / sizeof(tune1[0]);
 int length2 = sizeof(tune2) / sizeof(tune2[0]);
 int length3 = sizeof(tune3) / sizeof(tune3[0]);
 
+void displaySoundLevel(int level)
+{
+    mx.clear();
+    for (int col = 0; col < numColumns; col++)
+    {
+        for (int row = 0; row < level; row++)
+        {
+            mx.setPoint(7 - row, col, true); // 从下到上绘制每列
+        }
+    }
+}
+
+void Dai_tone_init(void)
+{
+    matrixDisplay.begin();
+    mx.begin();
+    matrixDisplay.setIntensity(0); // 亮度范围从 0 到 15
+    matrixDisplay.displayClear();
+    mx.clear();
+}
+
 void tone_shang_chun_shan(void)
 {
     static uint32_t current_time;
@@ -145,6 +178,8 @@ void tone_shang_chun_shan(void)
         {
             noTone(tonepin);
             tone(tonepin, tune1[tone_ptr]);
+            int level = map(tune1[tone_ptr], 0, 8, 0, 8); // 将模拟值映射为点阵模块的行数（从0到8）
+            displaySoundLevel(level);
             tone_ptr++;
             current_time = millis();
         }
@@ -188,25 +223,3 @@ void tone_yuan_yu_chou(void)
     else
         noTone(tonepin);
 }
-
-// 上春山第一个唱
-
-// // 大鱼第二个唱
-// for (int x = 0; x < length2; x++)
-// {
-//     tone(tonepin, tune2[x]);
-//     delay(durt2[x]);
-//     noTone(tonepin);
-//     if (digitalRead(stop) == 1)
-//         break;
-// }
-
-// // 愿与愁第三个唱
-// for (int x = 0; x < length3; x++)
-// {
-//     tone(tonepin, tune3[x]);
-//     delay(durt3[x]);
-//     noTone(tonepin);
-//     if (digitalRead(stop) == 1)
-//         break;
-// }
