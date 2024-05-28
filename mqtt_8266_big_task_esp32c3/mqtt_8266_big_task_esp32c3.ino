@@ -2,7 +2,7 @@
  * @Author: xuyang
  * @Date: 2024-05-26 22:24:39
  * @LastEditors: xuyang
- * @LastEditTime: 2024-05-28 11:31:12
+ * @LastEditTime: 2024-05-28 12:04:16
  * @FilePath: \8266_task_xuy_kenbio\mqtt_8266_big_task_esp32c3\mqtt_8266_big_task_esp32c3.ino
  * @Description:
  *
@@ -32,7 +32,7 @@ void setup()
     scheduler.addKeyEventHandler(0, handleButton1);
     scheduler.addKeyEventHandler(1, handleButton2);
     // 添加任务
-    shceduler.addTask(led_blink1, 1000);
+    scheduler.addTask(led_blink1, 1000);
     scheduler.addTask(led_blink2, 500);
 }
 
