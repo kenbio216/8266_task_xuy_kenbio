@@ -1024,7 +1024,7 @@ void loop()
   //   reconnect();
   // }
   // client.loop();
-  if ( 1)
+  if (1)
   {
     task_study();
     key[0].short_flag = 0;

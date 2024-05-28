@@ -6,6 +6,9 @@
 #define DATA_PIN 3 // GPIO 13 - D7
 #define CS_PIN 7   // GPIO 15 - D8
 #define CLK_PIN 2  // GPIO 14 - D5
+/* ---------------------------------- 开机动画 ---------------------------------- */
+uint8_t music_logo[] = {0x7E, 0x42, 0x7E, 0x42, 0x42, 0xC6, 0xC6, 0x00};
+char char_array[8];
 
 MD_Parola matrixDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
@@ -230,7 +233,7 @@ int length1 = sizeof(tune1) / sizeof(tune1[0]);
 int length2 = sizeof(tune2) / sizeof(tune2[0]);
 int length3 = sizeof(tune3) / sizeof(tune3[0]);
 
-void displaySoundLevel(int level)
+static inline void displaySoundLevel(int level)
 {
     mx.clear();
     for (int col = 0; col < numColumns; col++)
@@ -249,13 +252,30 @@ void Dai_tone_init(void)
     matrixDisplay.setIntensity(0); // 亮度范围从 0 到 15
     matrixDisplay.displayClear();
     mx.clear();
+
+    noTone(tonepin);
+
+    /* ---------------------------------- 开机动画 ---------------------------------- */
+    for (int i = 0; i < 8; i++)
+    {
+        char_array[i] = static_cast<char>(music_logo[i]);
+    }
+    matrixDisplay.displayScroll("MUSIC", PA_LEFT, PA_SCROLL_LEFT, 50);
+    while (!matrixDisplay.displayAnimate())
+    {
+    }
 }
 
 void tone_shang_chun_shan(void)
 {
     static uint32_t current_time;
     static uint8_t tone_ptr;
-    if (tone_ptr < 74)
+    if (tone_ptr >= 73)
+    {
+        noTone(tonepin);
+        tone_ptr = 0;
+    }
+    else if (tone_ptr < 73)
     {
         if (millis() - current_time > durt1[tone_ptr - 1])
         {
@@ -266,11 +286,6 @@ void tone_shang_chun_shan(void)
             tone_ptr++;
             current_time = millis();
         }
-    }
-    else if (tone_ptr >= 74)
-    {
-        noTone(tonepin);
-        tone_ptr = 0;
     }
 }
 
