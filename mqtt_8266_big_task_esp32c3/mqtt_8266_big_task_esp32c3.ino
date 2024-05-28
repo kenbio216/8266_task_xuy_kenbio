@@ -2,7 +2,7 @@
  * @Author: xuyang
  * @Date: 2024-05-26 22:24:39
  * @LastEditors: xuyang
- * @LastEditTime: 2024-05-28 12:04:16
+ * @LastEditTime: 2024-05-28 22:23:50
  * @FilePath: \8266_task_xuy_kenbio\mqtt_8266_big_task_esp32c3\mqtt_8266_big_task_esp32c3.ino
  * @Description:
  *
@@ -14,6 +14,43 @@
 #include "Xu_schedule.h"
 #include "Dai_tone.h"
 
+/* -------------------------------------------------------------------------- */
+/*                                   点灯科技部分                                   */
+/* -------------------------------------------------------------------------- */
+#define BLINKER_PRINT Serial
+#define BLINKER_WIFI
+
+#include <Blinker.h>
+
+char auth[] = "92ee9b0c302e";
+char ssid[] = "kenbio";
+char pswd[] = "123456xuy";
+
+// 新建组件对象
+BlinkerButton Button1("btn-abc");
+BlinkerNumber Number1("num-abc");
+
+int counter = 0;
+
+// 按下按键即会执行该函数
+void button1_callback(const String &state)
+{
+    BLINKER_LOG("get button state: ", state);
+    // digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+    Serial.println("点灯科技测试成功");
+}
+
+// 如果未绑定的组件被触发，则会执行其中内容
+void dataRead(const String &data)
+{
+    BLINKER_LOG("Blinker readString: ", data);
+    counter++;
+    Number1.print(counter);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   任务调度器部分                                  */
+/* -------------------------------------------------------------------------- */
 Scheduler scheduler;
 uint8_t music_flag = 0;
 
@@ -28,7 +65,6 @@ void handleButton2()
     Serial.println("Button 2 pressed!");
     music_flag = 0;
     noTone(tonepin);
-
 }
 
 void setup()
@@ -40,10 +76,20 @@ void setup()
     // 添加任务
     scheduler.addTask(led_blink1, 1000);
     scheduler.addTask(led_blink2, 500);
+
+    /* --------------------------------- 点灯科技部分 --------------------------------- */
+#if defined(BLINKER_PRINT)
+    BLINKER_DEBUG.stream(BLINKER_PRINT);
+#endif
+    // 初始化blinker
+    Blinker.begin(auth, ssid, pswd);
+    Blinker.attachData(dataRead);
+    Button1.attach(button1_callback);
 }
 
 void loop()
 {
+    Blinker.run();
     scheduler.run();
     if (music_flag)
     {
