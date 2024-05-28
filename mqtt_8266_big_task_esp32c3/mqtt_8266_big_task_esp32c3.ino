@@ -27,6 +27,7 @@ void handleButton2()
 {
     Serial.println("Button 2 pressed!");
     music_flag = 0;
+    noTone(tonepin);
 
 }
 

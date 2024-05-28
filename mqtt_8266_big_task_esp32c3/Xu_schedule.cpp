@@ -77,7 +77,7 @@ void Scheduler::init()
     pinMode(tonepin, OUTPUT);
 
 
-    addTask(scanKeysTask, 100); // 添加按键扫描任务
+    addTask(scanKeysTask, 10); // 添加按键扫描任务
 }
 
 void Scheduler::run()
