@@ -1,19 +1,19 @@
 #include "Dai_tone.h"
-// /* ------------------------------- 四合一点阵的引脚定义 ------------------------------- */
-// #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
-// #define MAX_DEVICES 4
+/* ------------------------------- 四合一点阵的引脚定义 ------------------------------- */
+#define HARDWARE_TYPE MD_MAX72XX::FC16_HW
+#define MAX_DEVICES 4
 
-// #define DATA_PIN 3 // GPIO 13 - D7
-// #define CS_PIN 7   // GPIO 15 - D8
-// #define CLK_PIN 2  // GPIO 14 - D5
-// /* ---------------------------------- 开机动画 ---------------------------------- */
-// uint8_t music_logo[] = {0x7E, 0x42, 0x7E, 0x42, 0x42, 0xC6, 0xC6, 0x00};
-// char char_array[8];
+#define DATA_PIN 3 // GPIO 13 - D7
+#define CS_PIN 7   // GPIO 15 - D8
+#define CLK_PIN 2  // GPIO 14 - D5
+/* ---------------------------------- 开机动画 ---------------------------------- */
+uint8_t music_logo[] = {0x7E, 0x42, 0x7E, 0x42, 0x42, 0xC6, 0xC6, 0x00};
+char char_array[8];
 
-// MD_Parola matrixDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
-// MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
+MD_Parola matrixDisplay = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
+MD_MAX72XX mx = MD_MAX72XX(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 
-// const int numColumns = MAX_DEVICES * 8; // 点阵模块的列数
+const int numColumns = MAX_DEVICES * 8; // 点阵模块的列数
 
 /* -------------------------------------------------------------------------- */
 /*                                    音调定义                                    */
@@ -229,29 +229,36 @@ int durt3[] = {
     250, 500, 250, 500, 250, 375, 725,
     250, 250, 500, 250, 500, 250, 725};
 
+int length1 = sizeof(tune1) / sizeof(tune1[0]);
+int length2 = sizeof(tune2) / sizeof(tune2[0]);
+int length3 = sizeof(tune3) / sizeof(tune3[0]);
 
-
-DaiTone::DaiTone()
-    : music_logo{0x7E, 0x42, 0x7E, 0x42, 0x42, 0xC6, 0xC6, 0x00},
-      matrixDisplay(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES),
-      mx(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES),
-      numColumns(MAX_DEVICES * 8),
-      tonepin(8), // 假设8是用于音调的引脚
-      current_time(0),
-      tone_ptr(0)
+static inline void displaySoundLevel(int level)
 {
+    mx.clear();
+    for (int col = 0; col < numColumns; col++)
+    {
+        for (int row = 0; row < level; row++)
+        {
+            mx.setPoint(7 - row, col, true); // 从下到上绘制每列
+        }
+    }
 }
 
-void DaiTone::init()
+void Dai_tone_init(void)
 {
-    // 初始化代码
-    pinMode(tonepin, OUTPUT);
     matrixDisplay.begin();
-    matrixDisplay.setIntensity(0);
+    mx.begin();
+    matrixDisplay.setIntensity(0); // 亮度范围从 0 到 15
     matrixDisplay.displayClear();
-    for (int i = 0; i < sizeof(music_logo); i++)
+    mx.clear();
+
+    noTone(tonepin);
+
+    /* ---------------------------------- 开机动画 ---------------------------------- */
+    for (int i = 0; i < 8; i++)
     {
-        mx.setColumn(i, music_logo[i]);
+        char_array[i] = static_cast<char>(music_logo[i]);
     }
     matrixDisplay.displayScroll("MUSIC", PA_LEFT, PA_SCROLL_LEFT, 50);
     while (!matrixDisplay.displayAnimate())
@@ -259,17 +266,10 @@ void DaiTone::init()
     }
 }
 
-void DaiTone::displaySoundLevel(int level)
+void tone_shang_chun_shan(void)
 {
-    mx.clear();
-    for (int i = level; i < 8; i++)
-    {
-        mx.setRow(i, 0xFF);
-    }
-}
-
-void DaiTone::toneShangChunShan()
-{
+    static uint32_t current_time;
+    static uint8_t tone_ptr;
     if (tone_ptr >= 73)
     {
         noTone(tonepin);
@@ -281,7 +281,7 @@ void DaiTone::toneShangChunShan()
         {
             noTone(tonepin);
             tone(tonepin, tune1[tone_ptr]);
-            int level = map(tune11[tone_ptr], 0, 8, 0, 8);
+            int level = map(tune11[tone_ptr], 0, 8, 0, 8); // 将模拟值映射为点阵模块的行数（从0到8）
             displaySoundLevel(level);
             tone_ptr++;
             current_time = millis();
@@ -289,8 +289,10 @@ void DaiTone::toneShangChunShan()
     }
 }
 
-void DaiTone::toneDaYu()
+void tone_da_yu(void)
 {
+    static uint32_t current_time;
+    static uint8_t tone_ptr;
     if (tone_ptr < 77)
     {
         if (millis() - current_time > durt2[tone_ptr - 1])
@@ -302,13 +304,13 @@ void DaiTone::toneDaYu()
         }
     }
     else
-    {
         noTone(tonepin);
-    }
 }
 
-void DaiTone::toneYuanYuChou()
+void tone_yuan_yu_chou(void)
 {
+    static uint32_t current_time;
+    static uint8_t tone_ptr;
     if (tone_ptr < 141)
     {
         if (millis() - current_time > durt3[tone_ptr - 1])
@@ -320,7 +322,5 @@ void DaiTone::toneYuanYuChou()
         }
     }
     else
-    {
         noTone(tonepin);
-    }
 }

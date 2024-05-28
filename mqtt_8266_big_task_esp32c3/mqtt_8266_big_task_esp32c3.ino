@@ -15,9 +15,7 @@
 #include "Dai_tone.h"
 
 Scheduler scheduler;
-DaiTone Dai_tone;
-
-uint8_t music_flag;
+uint8_t music_flag = 0;
 
 void handleButton1()
 {
@@ -29,11 +27,12 @@ void handleButton2()
 {
     Serial.println("Button 2 pressed!");
     music_flag = 0;
+
 }
 
 void setup()
 {
-    Dai_tone.init();
+    Dai_tone_init();
     scheduler.init();
     scheduler.addKeyEventHandler(0, handleButton1);
     scheduler.addKeyEventHandler(1, handleButton2);
@@ -45,13 +44,9 @@ void setup()
 void loop()
 {
     scheduler.run();
-    if (music_flag == 1)
+    if (music_flag)
     {
-        Dai_tone.toneShangChunShan();
-    }
-    else
-    {
-        // DaiTone.toneDaYu();
+        tone_shang_chun_shan();
     }
 }
 
