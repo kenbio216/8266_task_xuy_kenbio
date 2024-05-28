@@ -2,7 +2,7 @@
  * @Author: xuyang
  * @Date: 2024-05-26 22:24:39
  * @LastEditors: xuyang
- * @LastEditTime: 2024-05-28 10:57:14
+ * @LastEditTime: 2024-05-28 11:31:12
  * @FilePath: \8266_task_xuy_kenbio\mqtt_8266_big_task_esp32c3\mqtt_8266_big_task_esp32c3.ino
  * @Description:
  *
@@ -15,30 +15,39 @@
 #include "Dai_tone.h"
 
 Scheduler scheduler;
+
+void handleButton1()
+{
+    Serial.println("Button 1 pressed!");
+}
+
+void handleButton2()
+{
+    Serial.println("Button 2 pressed!");
+}
+
 void setup()
 {
-    Dai_tone_init();
     scheduler.init();
+    scheduler.addKeyEventHandler(0, handleButton1);
+    scheduler.addKeyEventHandler(1, handleButton2);
+    // 添加任务
+    shceduler.addTask(led_blink1, 1000);
+    scheduler.addTask(led_blink2, 500);
 }
+
 void loop()
 {
     scheduler.run();
 }
-// void key_proc(void)
-// {
-//     if (key[1].short_flag)
-//     {
-//         Serial.println("按键2被按下咯");
-//         digitalWrite(pin_led_01, !digitalRead(pin_led_01)); // 翻转2号灯
-//         music_flag = 1;
-//         key[1].short_flag = 0;
-//     }
-//     if (key[0].short_flag)
-//     {
-//         Serial.println("按键1被按下咯");
-//         digitalWrite(pin_led_01, !digitalRead(pin_led_01)); // 翻转2号灯
-//         music_flag = 0;
-//         noTone(tonepin);
-//         key[0].short_flag = 0;
-//     }
-// }
+
+// led_blink1 和 led_blink2 函数实现
+static inline void led_blink1()
+{
+    digitalWrite(pin_led_01, !digitalRead(pin_led_01));
+}
+
+static inline void led_blink2()
+{
+    digitalWrite(pin_led_02, !digitalRead(pin_led_02));
+}

@@ -16,14 +16,15 @@ const int tonepin = 6;
 const int pin_button_1 = 0;
 const int pin_button_2 = 1;
 
+const uint8_t MAX_TASKS = 10; // 任务的最大数量
+const uint8_t MAX_KEYS = 2;   // 按键的最大数量
+
 // Key类声明
-class Key
-{
+class Key {
 public:
     Key(int pin);
     void scan();
     bool isShortPressed();
-
 private:
     int pin;
     uint8_t key_sta;
@@ -32,13 +33,11 @@ private:
 };
 
 // Task类声明
-class Task
-{
+class Task {
 public:
     Task(void (*task_func)(void), uint16_t rate_ms);
     void run();
     bool shouldRun(uint32_t now);
-
 private:
     void (*task_func)(void);
     uint16_t rate_ms;
@@ -46,22 +45,20 @@ private:
 };
 
 // Scheduler类声明
-class Scheduler
-{
+class Scheduler {
 public:
     Scheduler();
     void init();
     void run();
     void addTask(void (*task_func)(void), uint16_t rate_ms);
-
+    void addKeyEventHandler(uint8_t keyIndex, void (*handler)(void));
 private:
-    Task *tasks[10]; // 假设最多有10个任务
+    Task* tasks[MAX_TASKS]; // 任务数组
     uint8_t task_num;
-    Key keys[2];
+    Key keys[MAX_KEYS];
+    void (*keyEventHandlers[MAX_KEYS])(void); // 按键事件处理函数数组
+    static void scanKeysTask();
+    static Scheduler* instance;
 };
 
-// 任务函数声明
-static inline void led_blink1();
-static inline void led_blink2();
-
-#endif _XU_SCHEDULE_H_
+#endif // _XU_SCHEDULE_H_

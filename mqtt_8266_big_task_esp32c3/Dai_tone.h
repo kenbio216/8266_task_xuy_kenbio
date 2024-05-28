@@ -17,4 +17,4 @@ void tone_da_yu(void);
 void tone_yuan_yu_chou(void);
 void Dai_tone_init(void);
 
-#endif _DAI_TONE_H_
+#endif //_DAI_TONE_H_
