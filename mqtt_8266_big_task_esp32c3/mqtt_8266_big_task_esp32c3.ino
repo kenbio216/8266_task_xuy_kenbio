@@ -15,19 +15,25 @@
 #include "Dai_tone.h"
 
 Scheduler scheduler;
+DaiTone Dai_tone;
+
+uint8_t music_flag;
 
 void handleButton1()
 {
     Serial.println("Button 1 pressed!");
+    music_flag = 1;
 }
 
 void handleButton2()
 {
     Serial.println("Button 2 pressed!");
+    music_flag = 0;
 }
 
 void setup()
 {
+    Dai_tone.init();
     scheduler.init();
     scheduler.addKeyEventHandler(0, handleButton1);
     scheduler.addKeyEventHandler(1, handleButton2);
@@ -39,6 +45,14 @@ void setup()
 void loop()
 {
     scheduler.run();
+    if (music_flag == 1)
+    {
+        Dai_tone.toneShangChunShan();
+    }
+    else
+    {
+        // DaiTone.toneDaYu();
+    }
 }
 
 // led_blink1 和 led_blink2 函数实现
