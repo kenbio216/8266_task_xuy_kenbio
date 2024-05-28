@@ -247,6 +247,10 @@ static inline void displaySoundLevel(int level)
 
 void Dai_tone_init(void)
 {
+    // 如果你使用的是ESP32，下面的代码可以初始化LEDC
+    ledcSetup(0, 1000, 8);      // 通道0，频率1000Hz，分辨率8位
+    ledcAttachPin(tonepin, 0); // 将通道0与TONE_PIN关联
+
     matrixDisplay.begin();
     mx.begin();
     matrixDisplay.setIntensity(0); // 亮度范围从 0 到 15
