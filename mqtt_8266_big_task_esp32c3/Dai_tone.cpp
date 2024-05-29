@@ -309,7 +309,7 @@ void tone_da_yu(void)
 {
     static uint32_t current_time;
     static uint8_t tone_ptr;
-    if (tone_ptr < 77)
+    if (tone_ptr < 76)
     {
         if (millis() - current_time > durt2[tone_ptr - 1])
         {
@@ -319,15 +319,18 @@ void tone_da_yu(void)
             current_time = millis();
         }
     }
-    else
+    else if (tone_ptr >= 76)
+    {
         noTone(tonepin);
+        tone_ptr = 0;
+    }
 }
 
 void tone_yuan_yu_chou(void)
 {
     static uint32_t current_time;
     static uint8_t tone_ptr;
-    if (tone_ptr < 141)
+    if (tone_ptr < 140)
     {
         if (millis() - current_time > durt3[tone_ptr - 1])
         {
@@ -338,5 +341,8 @@ void tone_yuan_yu_chou(void)
         }
     }
     else
+    {
         noTone(tonepin);
+        tone_ptr = 0;
+    }
 }
