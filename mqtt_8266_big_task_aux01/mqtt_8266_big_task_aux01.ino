@@ -1,9 +1,19 @@
+/*
+ * @Author: xuyang
+ * @Date: 2024-05-09 11:57:23
+ * @LastEditors: xuyang
+ * @LastEditTime: 2024-05-28 22:59:05
+ * @FilePath: \8266_task_xuy_kenbio\mqtt_8266_big_task_aux01\mqtt_8266_big_task_aux01.ino
+ * @Description: 
+ * 
+ * Copyright (c) 2024 by xuyang, All Rights Reserved 
+ */
 #include "arduinoFFT.h"
 
-const int analogPin = 34;                 // GPIO34
+const int analogPin = 11;                 // GPIO34
 const int sampleSize = 256;               // FFT采样大小
-const float amplificationFactor = 1000.0; // 信号变化量放大倍数
-const int offset = 350;                   // 偏置量
+const float amplificationFactor = 1.0; // 信号变化量放大倍数
+const int offset = 0;                   // 偏置量
 
 // FFT相关变量
 ArduinoFFT<double> FFT; // 指定模板类型为 double

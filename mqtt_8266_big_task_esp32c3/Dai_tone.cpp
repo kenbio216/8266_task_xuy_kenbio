@@ -1,3 +1,13 @@
+/***
+ * @Author: xuyang
+ * @Date: 2024-05-26 22:24:49
+ * @LastEditors: xuyang
+ * @LastEditTime: 2024-05-28 22:44:50
+ * @FilePath: \8266_task_xuy_kenbio\mqtt_8266_big_task_esp32c3\Dai_tone.cpp
+ * @Description:
+ * @
+ * @Copyright (c) 2024 by xuyang, All Rights Reserved
+ */
 #include "Dai_tone.h"
 /* ------------------------------- 四合一点阵的引脚定义 ------------------------------- */
 #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
@@ -233,8 +243,10 @@ int length1 = sizeof(tune1) / sizeof(tune1[0]);
 int length2 = sizeof(tune2) / sizeof(tune2[0]);
 int length3 = sizeof(tune3) / sizeof(tune3[0]);
 
-static inline void displaySoundLevel(int level)
+void displaySoundLevel(int level)
 {
+    Serial.print("Sound Level: ");
+    Serial.println(level);
     mx.clear();
     for (int col = 0; col < numColumns; col++)
     {
@@ -248,7 +260,7 @@ static inline void displaySoundLevel(int level)
 void Dai_tone_init(void)
 {
     // 如果你使用的是ESP32，下面的代码可以初始化LEDC
-    ledcSetup(0, 1000, 8);      // 通道0，频率1000Hz，分辨率8位
+    ledcSetup(0, 1000, 8);     // 通道0，频率1000Hz，分辨率8位
     ledcAttachPin(tonepin, 0); // 将通道0与TONE_PIN关联
 
     matrixDisplay.begin();

@@ -7,8 +7,8 @@
 #include <SPI.h>
 
 #include "Xu_schedule.h"
-/* --------------------------------- 每一曲的长度 --------------------------------- */
 
+extern MD_MAX72XX mx;
 
 //   记得pinMode(tonepin,OUTPUT);
 /* ---------------------------------- 调用方式 ---------------------------------- */
@@ -16,5 +16,6 @@ void tone_shang_chun_shan(void);
 void tone_da_yu(void);
 void tone_yuan_yu_chou(void);
 void Dai_tone_init(void);
+void displaySoundLevel(int level);
 
 #endif //_DAI_TONE_H_

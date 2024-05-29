@@ -2,7 +2,7 @@
  * @Author: xuyang
  * @Date: 2024-05-26 22:24:39
  * @LastEditors: xuyang
- * @LastEditTime: 2024-05-28 22:23:50
+ * @LastEditTime: 2024-05-29 10:51:13
  * @FilePath: \8266_task_xuy_kenbio\mqtt_8266_big_task_esp32c3\mqtt_8266_big_task_esp32c3.ino
  * @Description:
  *
@@ -11,8 +11,15 @@
 // TODO 一份好的代码注释，可以让你少写很多的文档，因为代码本身就是最好的文档
 // TODO 有感而发，好的代码有三个特点：1，运行延迟低卡bug少，比如任务调度器
 // TODO  2，可读性高简洁明了，比如OOP编程 3，分工明确，没有无效定义，函数见名知意，比如这个代码
+
 #include "Xu_schedule.h"
 #include "Dai_tone.h"
+
+#include "SignalProcessing.h"
+
+#define MIC_PIN 4 // GPIO 4 - 接麦克风输入引脚
+
+const int analogPin = 4; // 使用GPIO4作为模拟输入引脚
 
 /* -------------------------------------------------------------------------- */
 /*                                   点灯科技部分                                   */
@@ -69,6 +76,8 @@ void handleButton2()
 
 void setup()
 {
+    pinMode(MIC_PIN, INPUT); // 设置麦克风引脚为输入模式
+
     Dai_tone_init();
     scheduler.init();
     scheduler.addKeyEventHandler(0, handleButton1);
@@ -89,12 +98,23 @@ void setup()
 
 void loop()
 {
-    Blinker.run();
+    int micValue = analogRead(MIC_PIN); // 读取麦克风的模拟值
+    processSignal(micValue);            // 处理信号并显示
+    
+    // 延迟测试，调试用的
+    static uint32_t timer;
+    Serial.print(millis() - timer);
+    Serial.println("ms");
+    timer = millis();
+
+    // Blinker.run();
     scheduler.run();
+
     if (music_flag)
     {
         tone_shang_chun_shan();
     }
+
 }
 
 // led_blink1 和 led_blink2 函数实现
