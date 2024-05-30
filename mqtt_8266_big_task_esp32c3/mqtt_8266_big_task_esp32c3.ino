@@ -77,7 +77,7 @@ void rainbowEffect()
 
 void rgb_light_task()
 {
-    if (mode_flag != FREE)
+    if (mode_flag == FREE)
     {
         switch (tone_flag)
         {
@@ -95,7 +95,7 @@ void rgb_light_task()
             break;
         }
     }
-    else if (mode_flag == FREE)
+    else if (mode_flag != FREE)
     {
         rainbowEffect(); // 炫彩效果
     }
@@ -267,6 +267,12 @@ void setup()
     pinMode(redPin, OUTPUT);
     pinMode(greenPin, OUTPUT);
     pinMode(bluePin, OUTPUT);
+
+    /* ------------------------------- MQTT,点灯科技部分 ------------------------------ */
+    // 初始化blinker
+    Blinker.begin(auth, ssid, pswd);
+    Blinker.attachData(dataRead);
+    Button1.attach(button1_callback);
 
     // scheduler.add_task([](){ Blinker.run(); }, 700);
 }
