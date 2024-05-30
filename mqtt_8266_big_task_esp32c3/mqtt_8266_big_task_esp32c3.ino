@@ -2,7 +2,7 @@
  * @Author: xuyang
  * @Date: 2024-05-26 22:24:39
  * @LastEditors: xuyang
- * @LastEditTime: 2024-05-31 00:11:29
+ * @LastEditTime: 2024-05-31 00:33:53
  * @FilePath: \8266_task_xuy_kenbio\mqtt_8266_big_task_esp32c3\mqtt_8266_big_task_esp32c3.ino
  * @Description:
  *
@@ -43,6 +43,11 @@ uint8_t blinker_flag = 0;
 /* -------------------------------------------------------------------------- */
 /*                                   用户写的函数                                   */
 /* -------------------------------------------------------------------------- */
+// 定义 RGB LED 引脚
+const int redPin = 19;
+const int greenPin = 18;
+const int bluePin = 12;
+
 enum
 {
     SHANG_CHUN_SHAN = 0,
@@ -50,6 +55,56 @@ enum
     YUAN_YU_CHOU,
     TONE_STOP
 };
+
+// 颜色变化函数
+void setColor(int redValue, int greenValue, int blueValue)
+{
+    analogWrite(redPin, redValue);
+    analogWrite(greenPin, greenValue);
+    analogWrite(bluePin, blueValue);
+}
+
+// 炫彩效果函数
+void rainbowEffect()
+{
+    static uint8_t hue = 0;
+    hue++;
+    uint8_t redValue = sin(hue * 0.1) * 127 + 128;
+    uint8_t greenValue = sin(hue * 0.1 + 2) * 127 + 128;
+    uint8_t blueValue = sin(hue * 0.1 + 4) * 127 + 128;
+    setColor(redValue, greenValue, blueValue);
+}
+
+void rgb_light_task()
+{
+    if (mode_flag != FREE)
+    {
+        switch (tone_flag)
+        {
+        case SHANG_CHUN_SHAN:
+            setColor(255, 0, 0); // 红色
+            break;
+        case DA_YU:
+            setColor(0, 255, 0); // 绿色
+            break;
+        case YUAN_YU_CHOU:
+            setColor(0, 0, 255); // 蓝色
+            break;
+        case TONE_STOP:
+            setColor(0, 0, 0); // 关闭
+            break;
+        }
+    }
+    else if (mode_flag == FREE)
+    {
+        rainbowEffect(); // 炫彩效果
+    }
+    // case FREE:
+    //     break;
+    // case MICROSOUND:
+    //     setColor(255, 255, 0); // 黄色
+    //     break;
+}
 
 void uart_task()
 {
@@ -157,8 +212,18 @@ static inline void led_blink2()
 void button1_callback(const String &state)
 {
     BLINKER_LOG("get button state: ", state);
-    mode_flag++;
-    mode_flag = mode_flag % 4;
+    if (tone_flag == SHANG_CHUN_SHAN)
+    {
+        tone_flag = DA_YU;
+    }
+    else if (tone_flag == DA_YU)
+    {
+        tone_flag = YUAN_YU_CHOU;
+    }
+    else if (tone_flag == YUAN_YU_CHOU)
+    {
+        tone_flag = SHANG_CHUN_SHAN;
+    }
     Serial.println("点灯科技测试成功");
 }
 
@@ -188,14 +253,20 @@ void setup()
 
     // 添加用户的任务和初始化
 
-    mode_flag = MICROSOUND;
+    mode_flag = FREE;
     tone_flag = DA_YU;
 
-    scheduler.add_task(led_blink1, 100);
+    scheduler.add_task(led_blink1, 200);
     scheduler.add_task(tone_task, 10);
     scheduler.add_task(microsound_func, 1);
     scheduler.add_task(uart_task, 100);
     scheduler.add_task(led_blink2, 100);
+    scheduler.add_task(rgb_light_task, 10);
+
+    // 额外添加的RGB彩灯
+    pinMode(redPin, OUTPUT);
+    pinMode(greenPin, OUTPUT);
+    pinMode(bluePin, OUTPUT);
 
     // scheduler.add_task([](){ Blinker.run(); }, 700);
 }
