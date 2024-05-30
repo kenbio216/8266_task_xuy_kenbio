@@ -1,14 +1,14 @@
 #include "Xu_schedule.h"
 
-Scheduler *Scheduler::instance = nullptr;
+Scheduler *Scheduler::instance = nullptr; // 初始化静态成员变量
 
 // Key类实现
-Key::Key(int pin) : pin(pin), key_sta(0), judge_sta(0), short_flag(0)
+Key::Key(int pin) : pin(pin), key_sta(0), judge_sta(0), short_flag(0), long_flag(0), long_flag_aux(0) // 使用成员初始化列表对一些私有参数进行初始化
 {
-    pinMode(pin, INPUT_PULLUP);
+    pinMode(pin, INPUT_PULLUP); // 使用构造函数进行一些默认操作，这里没有再初始化其他的参数，而是设置了按键的引脚模式
 }
 
-void Key::scan()
+void Key::scan() // 按键扫描函数，灵感来自于蓝桥杯的定时器扫描按键
 {
     key_sta = digitalRead(pin);
     switch (judge_sta)
@@ -51,7 +51,7 @@ void Key::scan()
     }
 }
 
-bool Key::isShortPressed()
+bool Key::is_short_pressed() // 判断按键是否短按，顺便清理短按标志位
 {
     if (short_flag)
     {
@@ -61,7 +61,7 @@ bool Key::isShortPressed()
     return false;
 }
 
-bool Key::isLongPressed()
+bool Key::is_long_pressed() // 类似同上
 {
     if (long_flag)
     {
@@ -73,9 +73,9 @@ bool Key::isLongPressed()
 
 // Task类实现
 Task::Task(void (*task_func)(void), uint16_t rate_ms)
-    : task_func(task_func), rate_ms(rate_ms), last_run(0) {}
+    : task_func(task_func), rate_ms(rate_ms), last_run(0) {} // 没啥好说的，最简单的一个
 
-bool Task::shouldRun(uint32_t now)
+bool Task::is_should_run(uint32_t now)
 {
     return (now - last_run >= rate_ms);
 }
@@ -87,39 +87,40 @@ void Task::run()
 }
 
 // Scheduler类实现
-Scheduler::Scheduler()
-    : task_num(0), keys{Key(pin_button_1), Key(pin_button_2)}
+Scheduler::Scheduler()                                        // 主要是有两个数组，一个是任务数组，一个是按键数组
+    : task_num(0), keys{Key(pin_button_1), Key(pin_button_2)} // 初始化任务数量为0，初始化按键数组
 {
-    instance = this; // 用于在静态成员函数中访问非静态成员
-    for (uint8_t i = 0; i < MAX_KEYS; i++)
+    instance = this;                       // 用于在静态成员函数中访问非静态成员
+    for (uint8_t i = 0; i < MAX_KEYS; i++) // 逐个初始化按键事件处理函数数组
     {
-        keyEventHandlers[i] = nullptr;
+        key_event_handers_arr[i] = nullptr;
+        key_event_handers_long_press_arr[i] = nullptr;
     }
 }
 
-void Scheduler::init()
+void Scheduler::init() // 打开波特率通信，开启引脚模式，添加默认的按键扫描任务
 {
     Serial.begin(115200);
     pinMode(pin_led_01, OUTPUT);
     pinMode(pin_led_02, OUTPUT);
     pinMode(tonepin, OUTPUT);
 
-    addTask(scanKeysTask, 10); // 添加按键扫描任务
+    add_task(scan_keys_task, 10); // 添加按键扫描任务
 }
 
-void Scheduler::run()
+void Scheduler::run() // 每隔一段时间就运行一次任务
 {
     uint32_t now = millis();
     for (uint8_t i = 0; i < task_num; i++)
     {
-        if (tasks[i]->shouldRun(now))
+        if (tasks[i]->is_should_run(now))
         {
             tasks[i]->run();
         }
     }
 }
 
-void Scheduler::addTask(void (*task_func)(void), uint16_t rate_ms)
+void Scheduler::add_task(void (*task_func)(void), uint16_t rate_ms) // 使用C++的new函数来为一个类数组添加新的成员
 {
     if (task_num < MAX_TASKS)
     { // 确保任务数量不超过最大任务数
@@ -128,26 +129,35 @@ void Scheduler::addTask(void (*task_func)(void), uint16_t rate_ms)
     }
 }
 
-void Scheduler::addKeyEventHandler(uint8_t keyIndex, void (*handler)(void))
+void Scheduler::add_key_event_handler(uint8_t keyIndex, void (*handler)(void)) // 方便在ino文件中直接写处理函数
 {
     if (keyIndex < MAX_KEYS)
     { // 确保按键索引不超过数组大小
-        keyEventHandlers[keyIndex] = handler;
+        key_event_handers_arr[keyIndex] = handler;
     }
 }
 
-void Scheduler::scanKeysTask()
+void Scheduler::add_key_event_long_press_handler(uint8_t keyIndex, void (*handler)(void)) // 同上
+{
+    if (keyIndex < MAX_KEYS)
+    { // 确保按键索引不超过数组大小
+        key_event_handers_long_press_arr[keyIndex] = handler;
+    }
+}
+
+void Scheduler::scan_keys_task() // 作为按键扫描函数，用于检测按键是否被按下，如果按下，调用对应的事件处理函数，也就是所谓的hander句柄
 {
     for (uint8_t i = 0; i < MAX_KEYS; i++)
     {
         instance->keys[i].scan();
-        if (instance->keys[i].isShortPressed() && instance->keyEventHandlers[i] != nullptr)
+        if (instance->keys[i].is_short_pressed() && instance->key_event_handers_arr[i] != nullptr) // 按键短按了，就执行短按对应的事件处理函数
         {
-            instance->keyEventHandlers[i](); // 调用按键事件处理函数
+            instance->key_event_handers_arr[i](); // 调用按键事件处理函数
             Serial.printf("short press on key %d\n", i + 1);
         }
-        if (instance->keys[i].isLongPressed())
+        if (instance->keys[i].is_long_pressed() && instance->key_event_handers_long_press_arr[i] != nullptr) // 按键长按了，就执行短按对应的事件处理函数
         {
+            instance->key_event_handers_long_press_arr[i](); // 调用长按事件处理函数
             Serial.printf("Long press on key %d\n", i + 1);
         }
     }

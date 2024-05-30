@@ -48,6 +48,10 @@ float P = 1.0; // 估计误差协方差
 float K = 0.0; // 卡尔曼增益
 float X = 0.0; // 估计值
 
+void xu_signal_init(void){
+    pinMode(MIC_PIN, INPUT);
+}
+
 void initDisplay()
 {
     mx.begin();

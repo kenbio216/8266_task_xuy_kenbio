@@ -6,6 +6,8 @@
 #include <arduinoFFT.h>
 #include <MD_MAX72xx.h>
 
+#define MIC_PIN 4 // GPIO 4 - 接麦克风输入引脚
+
 // FFT相关参数
 const uint16_t samples = 64; // FFT样本数量（必须是2的幂）
 const double samplingFrequency = 1000; // 采样频率
@@ -30,5 +32,5 @@ void initFFT();
 float kalmanFilter(float measurement);
 void processSignal(int micValue);
 void displayFFTResult();
-
+void xu_signal_init(void);
 #endif // SIGNALPROCESSING_H
