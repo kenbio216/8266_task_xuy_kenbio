@@ -47,6 +47,11 @@ void handleButton1()
     Serial.println("Button 1 pressed!");
     mode_flag++;
     mode_flag = mode_flag % 4;
+    if (mode_flag == 3)
+    {
+        noTone(tonepin);
+        Serial.printf("mode_flag: %d\n", mode_flag);
+    }
 }
 
 void handleButton2()
@@ -62,9 +67,10 @@ void setup()
 
     Dai_tone_init();
     scheduler.init();
-    scheduler.addTask(led_blink1, 500);
-    addKeyEventHandler(0,handleButton1 );
-    addKeyEventHandler(1,handleButton2 );
+    scheduler.addKeyEventHandler(0, handleButton1);
+    scheduler.addKeyEventHandler(1, handleButton2);
+    // 添加任务
+    scheduler.addTask(led_blink1, 1000);
 
     // scheduler.addTask([](){ Blinker.run(); }, 700);
 }

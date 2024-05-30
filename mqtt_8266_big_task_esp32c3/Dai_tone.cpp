@@ -245,8 +245,8 @@ int length3 = sizeof(tune3) / sizeof(tune3[0]);
 
 void displaySoundLevel(int level)
 {
-    Serial.print("Sound Level: ");
-    Serial.println(level);
+    // Serial.print("Sound Level: ");
+    // Serial.println(level);
     mx.clear();
     for (int col = 0; col < numColumns; col++)
     {

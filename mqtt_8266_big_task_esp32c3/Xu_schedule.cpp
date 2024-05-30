@@ -15,7 +15,12 @@ void Key::scan()
     {
     case 0:
         if (key_sta == 0)
+        {
             judge_sta = 1;
+            timer = 0;
+            long_flag_aux = 1;
+        }
+
         break;
     case 1:
         if (key_sta == 0)
@@ -24,10 +29,23 @@ void Key::scan()
             judge_sta = 0;
         break;
     case 2:
-        if (key_sta == 1)
+        if (key_sta == 1 && timer < 80)
         {
             judge_sta = 0;
             short_flag = 1;
+        }
+        else if (key_sta == 1 && timer > 80)
+        {
+            judge_sta = 0;
+        }
+        else
+        {
+            timer++;
+        }
+        if (timer > 100 && key_sta == 0 && long_flag_aux == 1)
+        {
+            long_flag = 1;
+            long_flag_aux = 0;
         }
         break;
     }
@@ -38,6 +56,16 @@ bool Key::isShortPressed()
     if (short_flag)
     {
         short_flag = 0;
+        return true;
+    }
+    return false;
+}
+
+bool Key::isLongPressed()
+{
+    if (long_flag)
+    {
+        long_flag = 0;
         return true;
     }
     return false;
@@ -75,7 +103,6 @@ void Scheduler::init()
     pinMode(pin_led_01, OUTPUT);
     pinMode(pin_led_02, OUTPUT);
     pinMode(tonepin, OUTPUT);
-
 
     addTask(scanKeysTask, 10); // 添加按键扫描任务
 }
@@ -117,7 +144,11 @@ void Scheduler::scanKeysTask()
         if (instance->keys[i].isShortPressed() && instance->keyEventHandlers[i] != nullptr)
         {
             instance->keyEventHandlers[i](); // 调用按键事件处理函数
+            Serial.printf("short press on key %d\n", i + 1);
+        }
+        if (instance->keys[i].isLongPressed())
+        {
+            Serial.printf("Long press on key %d\n", i + 1);
         }
     }
 }
-
