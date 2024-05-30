@@ -10,6 +10,13 @@
 
 extern MD_MAX72XX mx;
 
+extern uint8_t mode_flag;
+enum
+{
+    MICROSOUND = 0,
+    FREE
+};
+
 //   记得pinMode(tonepin,OUTPUT);
 /* ---------------------------------- 调用方式 ---------------------------------- */
 void tone_shang_chun_shan(void);

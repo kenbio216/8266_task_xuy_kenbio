@@ -2,7 +2,7 @@
  * @Author: xuyang
  * @Date: 2024-05-26 22:24:39
  * @LastEditors: xuyang
- * @LastEditTime: 2024-05-30 23:45:41
+ * @LastEditTime: 2024-05-31 00:02:17
  * @FilePath: \8266_task_xuy_kenbio\mqtt_8266_big_task_esp32c3\mqtt_8266_big_task_esp32c3.ino
  * @Description:
  *
@@ -50,11 +50,18 @@ enum
     YUAN_YU_CHOU,
     TONE_STOP
 };
-enum
+
+void uart_task()
 {
-    MICROSOUND = 0,
-    FREE
-};
+    // 依次打印tone_flag,mode_flag,blinker_flag
+    Serial.pirnt("tone_flag:");
+    Serial.println(tone_flag);
+    Serial.pirnt("mode_flag:");
+    Serial.println(mode_flag);
+    Serial.pirnt("blinker_flag:");
+    Serial.println(blinker_flag);
+}
+
 void tone_task()
 {
     switch (tone_flag)
@@ -187,6 +194,9 @@ void setup()
     scheduler.add_task(led_blink1, 1000);
     scheduler.add_task(tone_task, 10);
     scheduler.add_task(microsound_func, 1);
+    scheduler.add_task(uart_task, 100);
+    scheduler.add_task(led_blink2, 100);
+
 
     // scheduler.add_task([](){ Blinker.run(); }, 700);
 }

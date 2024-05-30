@@ -297,8 +297,13 @@ void tone_shang_chun_shan(void)
         {
             noTone(tonepin);
             tone(tonepin, tune1[tone_ptr]);
-            int level = map(tune11[tone_ptr], 0, 8, 0, 8); // 将模拟值映射为点阵模块的行数（从0到8）
-            displaySoundLevel(level);
+            // 映射到四合一点阵上
+            if (mode_flag == FREE)
+            {
+                int level = map(tune11[tone_ptr], 0, 8, 0, 8); // 将模拟值映射为点阵模块的行数（从0到8）
+                displaySoundLevel(level);
+            }
+
             tone_ptr++;
             current_time = millis();
         }
@@ -315,6 +320,13 @@ void tone_da_yu(void)
         {
             noTone(tonepin);
             tone(tonepin, tune2[tone_ptr]);
+            // 映射到四合一点阵上
+            if (mode_flag == FREE)
+            {
+                int level = map(tune11[tone_ptr], 0, 8, 0, 8); // 将模拟值映射为点阵模块的行数（从0到8）
+                displaySoundLevel(level);
+            }
+
             tone_ptr++;
             current_time = millis();
         }
@@ -336,6 +348,13 @@ void tone_yuan_yu_chou(void)
         {
             noTone(tonepin);
             tone(tonepin, tune3[tone_ptr]);
+            // 映射到四合一点阵上
+            if (mode_flag == FREE)
+            {
+                int level = map(tune11[tone_ptr], 0, 8, 0, 8); // 将模拟值映射为点阵模块的行数（从0到8）
+                displaySoundLevel(level);
+            }
+
             tone_ptr++;
             current_time = millis();
         }
