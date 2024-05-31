@@ -2,7 +2,7 @@
  * @Author: xuyang
  * @Date: 2024-05-26 22:24:39
  * @LastEditors: xuyang
- * @LastEditTime: 2024-05-31 00:33:53
+ * @LastEditTime: 2024-05-31 23:44:49
  * @FilePath: \8266_task_xuy_kenbio\mqtt_8266_big_task_esp32c3\mqtt_8266_big_task_esp32c3.ino
  * @Description:
  *
@@ -59,9 +59,9 @@ enum
 // 颜色变化函数
 void setColor(int redValue, int greenValue, int blueValue)
 {
-    analogWrite(redPin, redValue);
-    analogWrite(greenPin, greenValue);
-    analogWrite(bluePin, blueValue);
+    analogWrite(0, redValue);
+    analogWrite(1, greenValue);
+    analogWrite(2, blueValue);
 }
 
 // 炫彩效果函数
@@ -85,10 +85,10 @@ void rgb_light_task()
             setColor(255, 0, 0); // 红色
             break;
         case DA_YU:
-            setColor(0, 255, 0); // 绿色
+            setColor(0, 200, 0); // 绿色
             break;
         case YUAN_YU_CHOU:
-            setColor(0, 0, 255); // 蓝色
+            setColor(0, 0, 100); // 蓝色
             break;
         case TONE_STOP:
             setColor(0, 0, 0); // 关闭
@@ -267,8 +267,21 @@ void setup()
     pinMode(redPin, OUTPUT);
     pinMode(greenPin, OUTPUT);
     pinMode(bluePin, OUTPUT);
+    //     // 设置 PWM 频率和通道
+    // ledcSetup(0, 5000, 8); // 通道 0, 5kHz, 8-bit 分辨率
+    // ledcSetup(1, 5000, 8);
+    // ledcSetup(2, 5000, 8);
 
+    //   // 初始化定时器中断
+    //     hw_timer_t *timer = timerBegin(0, 80, true); // 80 分频，APB 时钟为 80MHz
+    //     timerAttachInterrupt(timer, &taskScheduler, true);
+    //     timerAlarmWrite(timer, taskInterval * 1000, true); // 每 taskInterval 毫秒触发一次中断
+    //     timerAlarmEnable(timer);
     /* ------------------------------- MQTT,点灯科技部分 ------------------------------ */
+    // 初始化blinker
+#if defined(BLINKER_PRINT)
+    BLINKER_DEBUG.stream(BLINKER_PRINT);
+#endif
     // 初始化blinker
     Blinker.begin(auth, ssid, pswd);
     Blinker.attachData(dataRead);
