@@ -2,7 +2,7 @@
  * @Author: xuyang
  * @Date: 2024-05-26 22:24:39
  * @LastEditors: xuyang
- * @LastEditTime: 2024-05-31 23:44:49
+ * @LastEditTime: 2024-05-31 23:56:39
  * @FilePath: \8266_task_xuy_kenbio\mqtt_8266_big_task_esp32c3\mqtt_8266_big_task_esp32c3.ino
  * @Description:
  *
@@ -59,9 +59,9 @@ enum
 // 颜色变化函数
 void setColor(int redValue, int greenValue, int blueValue)
 {
-    analogWrite(0, redValue);
-    analogWrite(1, greenValue);
-    analogWrite(2, blueValue);
+    analogWrite(redPin, redValue);
+    analogWrite(greenPin, greenValue);
+    analogWrite(bluePin, blueValue);
 }
 
 // 炫彩效果函数
